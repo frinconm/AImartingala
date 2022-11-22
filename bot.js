@@ -1,10 +1,11 @@
 var config = {
     min_games_sample: {value: 50, type: 'number', label: 'Min Games Sample'},
-    max_games_sample: {value: 100, type: 'number', label: 'Max Games Sample'},
-    min_multiplier: {value: 2, type: 'multiplier', label: 'Min Multiplier'},
-    max_multiplier: {value: 100, type: 'multiplier', label: 'Max Multiplier'},
+    max_games_sample: {value: 150, type: 'number', label: 'Max Games Sample'},
+    min_multiplier: {value: 3, type: 'multiplier', label: 'Min Multiplier'},
+    max_multiplier: {value: 60, type: 'multiplier', label: 'Max Multiplier'},
     initial_bet: {value: 1000, type: 'balance', label: 'Base Bet'},
-    threshold: {value: 17, type: 'number', label: 'Min Deviation(%)'}
+    threshold: {value: 17, type: 'number', label: 'Min Deviation(%)'},
+    min_recover: {value: 10, type: 'number', label: 'Min Recovery'}
 };
 
 const gamesRecorded = [];
@@ -79,7 +80,7 @@ engine.on('GAME_STARTING', function () {
         if (engine.history.first().cashed_at != null) {
             bet = config.initial_bet;
         } else if (played_last_game) {
-            bet = Math.ceil((maxBalance + 100 - userInfo.balance) / (suggestedPlay.multiplier - 1) / 100) * 100;
+            bet = Math.ceil((maxBalance + (config.min_recover.value * 100) - userInfo.balance) / (suggestedPlay.multiplier - 1) / 100) * 100;
         }
 
         if (suggestedPlay.multiplier > 0) {
