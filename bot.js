@@ -78,7 +78,7 @@ engine.on('GAME_STARTING', function () {
     log(`Current sample size n = ${gamesRecorded.length}`)
     if (suggestedPlay?.multiplier && gamesRecorded.length >= config.min_games_sample.value) {
         if (engine.history.first().cashed_at != null) {
-            bet = config.initial_bet;
+            bet = config.initial_bet.value;
         } else if (played_last_game) {
             bet = Math.ceil((maxBalance + (config.min_recover.value * 100) - userInfo.balance) / (suggestedPlay.multiplier - 1) / 100) * 100;
         }
