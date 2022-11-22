@@ -23,7 +23,7 @@ engine.on('GAME_ENDED', function () {
     if (gamesRecorded.length === 0) {
         gamesRecorded.push(...engine.history.toArray());
     } else {
-        gamesRecorded.push(engine.history.first());
+        gamesRecorded.unshift(engine.history.first());
         if (gamesRecorded.length > config.max_games_sample.value) {
             gamesRecorded.pop();
         }
