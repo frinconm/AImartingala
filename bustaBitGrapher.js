@@ -1,7 +1,7 @@
 /** Inputs */
-const MAX_VALUE = 100;
-const MAX_GAMES = 100;
-const MIN_SUGGESTED_MULTIPLIER = 2;
+const MAX_GAME_SAMPLE = 150;
+const MAX_SUGGESTED_MULTIPLIER = 60;
+const MIN_SUGGESTED_MULTIPLIER = 3;
 
 /** Simulation **/
 let balance = 10000;
@@ -39,7 +39,7 @@ function watchForTabChanges() {
                 } else if (mutation.addedNodes[0].nodeName === 'TR') {
                     gamesRecorded.unshift(parseFloat(mutation.addedNodes[0].childNodes[0].childNodes[0].innerText.replaceAll(/\D\./g, '')));
 
-                    if (gamesRecorded.length > MAX_GAMES) {
+                    if (gamesRecorded.length > MAX_GAME_SAMPLE) {
                         gamesRecorded.pop();
                     }
                 }
@@ -70,7 +70,7 @@ function updateGraph() {
 
     actual.x = gamesRecorded.slice();
     actual.x.sort((a, b) => a - b);
-    actual.x = actual.x.map(x => x < MAX_VALUE ? x : (MAX_VALUE));
+    actual.x = actual.x.map(x => x < MAX_SUGGESTED_MULTIPLIER ? x : (MAX_SUGGESTED_MULTIPLIER));
     actual.y = actual.x.map((value, index, array) => {
         return array.filter(x => x >= value).length * 100 / actual.x.length;
     });
