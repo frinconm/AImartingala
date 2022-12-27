@@ -5,7 +5,8 @@ var config = {
     max_multiplier: {value: 60, type: 'multiplier', label: 'Max Multiplier'},
     initial_bet: {value: 1000, type: 'balance', label: 'Base Bet'},
     threshold: {value: 17, type: 'number', label: 'Min Deviation(%)'},
-    min_recover: {value: 10, type: 'number', label: 'Min Recovery'}
+    min_recover: {value: 10, type: 'number', label: 'Min Recovery'},
+    stop_loss: { value: 100, type: 'balance', label: 'Stop Loss(bits)'}
 };
 
 const gamesRecorded = [];
@@ -47,7 +48,7 @@ engine.on('GAME_ENDED', function () {
         dv: 0
     };
 
-    frequencyMap.forEach((v, i, a) => {
+    frequencyMap.forEach((v) => {
         const dv = getDeviation(v.v, v.f);
         if (dv > suggestedPlay.dv) {
             if (dv >= config.threshold.value && v.v > config.min_multiplier.value) {
@@ -81,7 +82,14 @@ engine.on('GAME_STARTING', function () {
         if (!!engine.history.first().cashedAt) {
             bet = config.initial_bet.value;
         } else if (played_last_game) {
-            bet = Math.ceil((maxBalance + (config.min_recover.value * 100) - userInfo.balance) / (suggestedPlay.multiplier - 1) / 100) * 100;
+            if (maxBalance > (userInfo.balance - config.stop_loss.value)) {
+                // New ceiling
+                maxBalance = userInfo.balance;
+                // Restarting bet
+                bet = config.initial_bet.value;
+            } else {
+                bet = Math.ceil((maxBalance + (config.min_recover.value * 100) - userInfo.balance) / (suggestedPlay.multiplier - 1) / 100) * 100;
+            }
         }
 
         if (suggestedPlay?.multiplier > 0) {
