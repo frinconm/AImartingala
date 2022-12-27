@@ -82,7 +82,7 @@ engine.on('GAME_STARTING', function () {
         if (!!engine.history.first().cashedAt) {
             bet = config.initial_bet.value;
         } else if (played_last_game) {
-            if (maxBalance > (userInfo.balance - config.stop_loss.value)) {
+            if (maxBalance > (userInfo.balance + config.stop_loss.value)) {
                 // New ceiling
                 maxBalance = userInfo.balance;
                 // Restarting bet
